@@ -18,13 +18,21 @@ namespace EmployeeRecordsInfrastructure.Repository
 
         public Project? GetById(int id) => _db.Projects
             .Include(p => p.ProjectUsers)
-                .ThenInclude(pu => pu.User)   // ✅ include users through join table
+                .ThenInclude(pu => pu.User)
             .Include(p => p.Tasks)
             .FirstOrDefault(p => p.Id == id);
 
+        public Project GetByIdWithTasks(int id)
+        {
+            return _db.Projects
+                .Include(p => p.Tasks)        // 👈 include tasks
+                .Include(p => p.ProjectUsers) // keep existing users too
+                .FirstOrDefault(p => p.Id == id);
+        }
+
         public IEnumerable<Project> GetAll() => _db.Projects
             .Include(p => p.ProjectUsers)
-                .ThenInclude(pu => pu.User)   // ✅ include users through join table
+                .ThenInclude(pu => pu.User)
             .Include(p => p.Tasks)
             .ToList();
 
@@ -46,23 +54,58 @@ namespace EmployeeRecordsInfrastructure.Repository
             _db.SaveChanges();
         }
 
-        // 🔑 Check if a user is part of a project
         public bool IsUserInProject(int projectId, int userId)
         {
             return _db.ProjectUsers
                 .Any(pu => pu.ProjectId == projectId && pu.UserId == userId);
         }
 
-        // 🔑 Get all projects for a user
         public IEnumerable<Project> GetProjectsForUser(int userId)
         {
             return _db.Projects
                 .Include(p => p.ProjectUsers)
-                    .ThenInclude(pu => pu.User)   // ✅ load user details too
+                    .ThenInclude(pu => pu.User)
                 .Include(p => p.Tasks)
                 .Where(p => p.ProjectUsers.Any(pu => pu.UserId == userId))
                 .ToList();
         }
+
+        // ✅ Add a user to a project
+        public bool AddUserToProject(int projectId, int userId)
+        {
+            var project = _db.Projects
+                .Include(p => p.ProjectUsers)
+                .FirstOrDefault(p => p.Id == projectId);
+
+            if (project == null) return false;
+
+            if (!project.ProjectUsers.Any(pu => pu.UserId == userId))
+            {
+                project.ProjectUsers.Add(new ProjectUser
+                {
+                    ProjectId = projectId,
+                    UserId = userId
+                });
+
+                _db.SaveChanges();
+            }
+
+            return true;
+        }
+
+        // ✅ Remove a user from a project
+        public bool RemoveUserFromProject(int projectId, int userId)
+        {
+            var projectUser = _db.ProjectUsers
+                .FirstOrDefault(pu => pu.ProjectId == projectId && pu.UserId == userId);
+
+            if (projectUser == null) return false;
+
+            _db.ProjectUsers.Remove(projectUser);
+            _db.SaveChanges();
+            return true;
+        }
     }
 }
+
 

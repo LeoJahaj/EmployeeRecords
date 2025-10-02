@@ -2,6 +2,7 @@
 using EmployeeRecordsCore.Interfaces;
 using EmployeeRecordsCore.Models;
 using EmployeeRecordsCore.Repositories;
+using Microsoft.EntityFrameworkCore; // 👈 for Include
 using System.Linq;
 
 namespace EmployeeRecordsApi.Services
@@ -78,8 +79,14 @@ namespace EmployeeRecordsApi.Services
 
         public bool DeleteProject(int id)
         {
-            var project = _projectRepository.GetById(id);
+            var project = _projectRepository.GetByIdWithTasks(id);
             if (project == null) return false;
+
+            // 🚫 Block only if unfinished tasks exist
+            if (project.Tasks != null && project.Tasks.Any(t => !t.IsCompleted))
+            {
+                throw new InvalidOperationException("Cannot delete project with unfinished tasks.");
+            }
 
             _projectRepository.Delete(project);
             return true;
@@ -94,7 +101,6 @@ namespace EmployeeRecordsApi.Services
             return project.ProjectUsers.Any(pu => pu.UserId == userId);
         }
 
-        // 🔑 Get all projects for a specific user
         public IEnumerable<ProjectDto> GetProjectsForUser(int userId)
         {
             var projects = _projectRepository.GetAll()
@@ -109,12 +115,34 @@ namespace EmployeeRecordsApi.Services
             });
         }
 
+        public bool AddUserToProject(int projectId, int userId)
+        {
+            var project = _projectRepository.GetById(projectId);
+            if (project == null) return false;
 
+            if (!project.ProjectUsers.Any(pu => pu.UserId == userId))
+            {
+                project.ProjectUsers.Add(new ProjectUser { ProjectId = projectId, UserId = userId });
+                _projectRepository.Update(project);
+            }
+            return true;
+        }
 
+        public bool RemoveUserFromProject(int projectId, int userId)
+        {
+            var project = _projectRepository.GetById(projectId);
+            if (project == null) return false;
 
+            var pu = project.ProjectUsers.FirstOrDefault(pu => pu.UserId == userId);
+            if (pu == null) return false;
 
+            project.ProjectUsers.Remove(pu);
+            _projectRepository.Update(project);
+            return true;
+        }
     }
 }
+
 
 
 

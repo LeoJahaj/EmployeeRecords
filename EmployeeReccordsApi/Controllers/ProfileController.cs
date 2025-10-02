@@ -23,24 +23,17 @@ namespace EmployeeRecordsApi.Controllers
         /// <summary>
         /// Get the profile of a user by user ID.
         /// - Admins can fetch any profile.  
-        /// - Employees can only fetch their own profile.
+        /// - Employees can fetch any profile (view only).
         /// </summary>
-        [Authorize]
+        [Authorize(Roles = "Administrator,Employee")]
         [HttpGet("{userId}")]
         public IActionResult GetProfile(int userId)
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            int currentUserId = userIdClaim != null ? int.Parse(userIdClaim) : 0;
-            bool isAdmin = User.IsInRole("Administrator");
-
-            // ⛔ Block employees trying to view other profiles
-            if (!isAdmin && currentUserId != userId)
-                return Forbid();
-
             var profile = _profileService.GetProfileByUserId(userId);
             if (profile == null) return NotFound();
             return Ok(profile);
         }
+
 
         /// <summary>
         /// Update the profile of a user.

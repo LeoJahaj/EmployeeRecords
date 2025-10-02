@@ -9,11 +9,14 @@ namespace EmployeeRecordsCore.DTOs
 {
     public class UserDto
     {
-        public int Id { get; set; }              // User identifier
-        public string UserName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public UserRole Role { get; set; } // e.g. "Employee" or "Administrator"
-        public string Password { get; set; } = string.Empty; // NEW
+        public int Id { get; set; }
+        public string? UserName { get; set; }
+        public string? Email { get; set; }
+
+        // Store role as string ("Administrator" / "Employee") for requests/responses
+        public string Role { get; set; } = string.Empty;
+
+        public string? Password { get; set; } // used only when creating/updating
     }
 }
 

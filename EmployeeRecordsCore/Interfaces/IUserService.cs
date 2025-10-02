@@ -14,6 +14,8 @@ namespace EmployeeRecordsCore.Interfaces
         UserDto? GetUserById(int id);
         bool DeleteUser(int id);
         IEnumerable<ProjectDto> GetProjectsForUser(int userId);
+        IEnumerable<UserDto> GetAllUsers();
+
     }
 }
 

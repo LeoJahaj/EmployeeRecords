@@ -14,7 +14,7 @@ namespace EmployeeRecordsCore.Models
         public string UserName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty; // stored securely
-        public UserRole Role { get; set; } = UserRole.Employee;          // "Employee" or "Administrator"
+        public UserRole Role { get; set; }         // "Employee" or "Administrator"
 
         // Relationships
         public ICollection<ProjectUser> ProjectUsers { get; set; } = new List<ProjectUser>(); // Many-to-many

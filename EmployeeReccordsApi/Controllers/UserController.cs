@@ -58,6 +58,17 @@ namespace EmployeeRecordsApi.Controllers
             return Ok(projects);
         }
 
+        // get all users 
+        // GET : ./api/user
+        [Authorize(Roles = "Administrator,Employee")]
+        [HttpGet]
+        public IActionResult GetAllUsers()
+        {
+            var users = _userService.GetAllUsers();
+            return Ok(users);
+        }
+
+
 
 
 
@@ -73,19 +84,10 @@ namespace EmployeeRecordsApi.Controllers
         /// 404 Not Found if the user does not exist.
         /// </returns>
         // GET: api/user/{id}
-        [Authorize]
+        [Authorize(Roles = "Administrator,Employee")]
         [HttpGet("{id}")]
         public IActionResult GetUserById(int id)
         {
-            // ✅ Extract claims from token
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            int currentUserId = userIdClaim != null ? int.Parse(userIdClaim) : 0;
-            bool isAdmin = User.IsInRole("Administrator");
-
-            // ⛔ Block if not admin and trying to access another user's data
-            if (!isAdmin && currentUserId != id)
-                return Forbid();
-
             var user = _userService.GetUserById(id);
 
             if (user == null)

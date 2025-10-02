@@ -13,6 +13,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // -------------------- Logging --------------------
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -33,7 +35,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Enter 'Bearer {token}'",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
+        Scheme = "Bearer",
         BearerFormat = "JWT",
         Reference = new OpenApiReference
         {
@@ -95,14 +97,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// CORS (allow all for dev)
+// CORS (allow frontend React app)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        b => b.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader());
+    options.AddPolicy("AllowFrontend",
+        b => b.WithOrigins("http://localhost:3000") // React dev server
+              .AllowAnyHeader()
+              .AllowAnyMethod());
 });
+
 
 var app = builder.Build();
 
@@ -123,6 +126,8 @@ app.UseMiddleware<EmployeeRecordsApi.Middleware.ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
+
 
 app.UseAuthentication();   // ✅ must come before UseAuthorization
 app.UseAuthorization();

@@ -88,14 +88,22 @@ namespace EmployeeRecordsApi.Controllers
             var userRole = User.FindFirstValue(ClaimTypes.Role);
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (userRole == "Employee" && task.AssignedToUserId != userId)
-                return Forbid();
+            // ✅ Employees can only update their own task and cannot reassign
+            if (userRole == "Employee")
+            {
+                if (task.AssignedToUserId != userId)
+                    return Forbid();
+
+                if (taskDto.AssignedToUserId != task.AssignedToUserId)
+                    return Forbid(); // block reassignment
+            }
 
             var updated = _taskService.UpdateTask(id, taskDto);
             if (!updated) return NotFound();
 
             return NoContent();
         }
+
 
         /// <summary>
         /// Delete a task by ID.

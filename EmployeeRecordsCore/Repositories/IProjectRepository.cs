@@ -16,6 +16,9 @@ namespace EmployeeRecordsCore.Repositories
         void Delete(Project project);
         bool IsUserInProject(int projectId, int userId);
         IEnumerable<Project> GetProjectsForUser(int userId);
+        Project GetByIdWithTasks(int id);
+        bool AddUserToProject(int projectId, int userId);
+        bool RemoveUserFromProject(int projectId, int userId);
     }
 }
 

@@ -31,7 +31,9 @@ namespace EmployeeRecordsApi.Services
 
         public TaskDto? GetTaskById(int id)
         {
-            var task = _taskRepository.GetById(id);
+            Tasks task = _taskRepository.GetById(id);
+            Console.WriteLine("the task"+task.Title);
+
             if (task == null) return null;
 
             return new TaskDto

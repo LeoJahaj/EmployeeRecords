@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace EmployeeRecordsApi.Controllers
 {
     /// <summary>
-    /// Manages projects: create, read, update, and delete.
+    /// Manages projects: create, read, update, delete, and user assignments.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -23,7 +23,7 @@ namespace EmployeeRecordsApi.Controllers
         /// <summary>
         /// Get all projects.
         /// - Admins see all projects.  
-        /// - Employees see only the projects they belong to.
+        /// - Employees see only their assigned projects.
         /// </summary>
         [Authorize]
         [HttpGet]
@@ -36,18 +36,15 @@ namespace EmployeeRecordsApi.Controllers
             var projects = _projectService.GetAllProjects();
 
             if (!isAdmin)
-            {
-                // Filter projects so employees only see the ones they belong to
                 projects = projects.Where(p => p.UserIds.Contains(currentUserId));
-            }
 
             return Ok(projects);
         }
 
         /// <summary>
         /// Get a project by ID.
-        /// - Admins can fetch any project.  
-        /// - Employees can only fetch projects they belong to.
+        /// - Admins: any project.  
+        /// - Employees: only their own projects.
         /// </summary>
         [Authorize]
         [HttpGet("{id}")]
@@ -82,7 +79,7 @@ namespace EmployeeRecordsApi.Controllers
         }
 
         /// <summary>
-        /// Update an existing project (Admins only).
+        /// Update a project (Admins only).
         /// </summary>
         [Authorize(Roles = "Administrator")]
         [HttpPut("{id}")]
@@ -97,33 +94,27 @@ namespace EmployeeRecordsApi.Controllers
             return NoContent();
         }
 
-        /// <summary>
-        /// Delete a project by ID (Admins only).
-        /// </summary>
         [Authorize(Roles = "Administrator")]
         [HttpDelete("{id}")]
         public IActionResult DeleteProject(int id)
         {
-            var success = _projectService.DeleteProject(id);
-            if (!success)
-                return NotFound($"Project with ID {id} not found or has open tasks.");
-            return NoContent();
+            try
+            {
+                var success = _projectService.DeleteProject(id);
+                if (!success)
+                    return NotFound($"Project with ID {id} not found.");
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
 
-
-
         /// <summary>
-        /// Check if a user belongs to a specific project.
-        /// Admin only.
+        /// Check if a user belongs to a project (Admins only).
         /// </summary>
-        /// <param name="projectId">The project ID.</param>
-        /// <param name="userId">The user ID.</param>
-        /// <returns>
-        /// 200 OK with true/false.  
-        /// 403 Forbidden if not an Administrator.
-        /// </returns>
-        // GET: api/project/{projectId}/user/{userId}/check
         [Authorize(Roles = "Administrator")]
         [HttpGet("{projectId}/user/{userId}/check")]
         public IActionResult IsUserInProject(int projectId, int userId)
@@ -133,16 +124,10 @@ namespace EmployeeRecordsApi.Controllers
         }
 
         /// <summary>
-        /// Get all projects for a specific user.
-        /// - Admins can get projects for any user.  
-        /// - Employees can only get their own projects.
+        /// Get all projects for a user.  
+        /// - Admins: any user.  
+        /// - Employees: only themselves.
         /// </summary>
-        /// <param name="userId">The user ID.</param>
-        /// <returns>
-        /// 200 OK with a list of projects.  
-        /// 403 Forbidden if an employee tries to fetch projects for another user.
-        /// </returns>
-        // GET: api/project/user/{userId}
         [Authorize]
         [HttpGet("user/{userId}")]
         public IActionResult GetProjectsForUser(int userId)
@@ -151,7 +136,6 @@ namespace EmployeeRecordsApi.Controllers
             int currentUserId = userIdClaim != null ? int.Parse(userIdClaim) : 0;
             bool isAdmin = User.IsInRole("Administrator");
 
-            // ⛔ Block employees from requesting another user's projects
             if (!isAdmin && currentUserId != userId)
                 return Forbid();
 
@@ -159,8 +143,38 @@ namespace EmployeeRecordsApi.Controllers
             return Ok(projects);
         }
 
+        // ✅ NEW ENDPOINTS
+
+        /// <summary>
+        /// Add a user to a project (Admins only).
+        /// </summary>
+        [Authorize(Roles = "Administrator")]
+        [HttpPost("{projectId}/user/{userId}")]
+        public IActionResult AddUserToProject(int projectId, int userId)
+        {
+            var success = _projectService.AddUserToProject(projectId, userId);
+            if (!success)
+                return NotFound($"Project {projectId} or User {userId} not found.");
+            return Ok(new { Message = $"User {userId} added to Project {projectId}" });
+        }
+
+        /// <summary>
+        /// Remove a user from a project (Admins only).
+        /// </summary>
+        [Authorize(Roles = "Administrator")]
+        [HttpDelete("{projectId}/user/{userId}")]
+        public IActionResult RemoveUserFromProject(int projectId, int userId)
+        {
+            var success = _projectService.RemoveUserFromProject(projectId, userId);
+            if (!success)
+                return NotFound($"User {userId} is not part of Project {projectId}.");
+            return Ok(new { Message = $"User {userId} removed from Project {projectId}" });
+        }
     }
 }
+
+
+
 
 
 
