@@ -1,0 +1,269 @@
+/* 🌍 Apply a basic font and background */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  margin: 0;
+  padding: 0;
+}
+
+/* 🔹 Center the login box */
+.login-container {
+  width: 300px;
+  margin: 100px auto; /* center horizontally + move down */
+  padding: 20px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px; /* rounded edges */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* light shadow */
+  text-align: center;
+}
+
+/* 🔹 Style the inputs */
+.login-container input {
+  width: 90%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+}
+
+/* 🔹 Style the button */
+.login-container button {
+  width: 95%;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #4CAF50; /* green */
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.login-container button:hover {
+  background-color: #45a049;
+}
+
+/* 🔹 Header navigation */
+.header {
+  background: #333;
+  padding: 10px;
+}
+
+.header nav a {
+  color: white;
+  margin-right: 15px;
+  text-decoration: none;
+}
+
+.header nav a:hover {
+  text-decoration: underline;
+}
+
+.header button {
+  background: red;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+/* ======================= */
+/* 🔹 Home Page Styles */
+/* ======================= */
+
+.home-container {
+  width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  background: white;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.home-container h2 {
+  color: #333;
+}
+
+.home-container p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.home-container ul {
+  list-style: none; /* remove bullets */
+  padding: 0;
+}
+
+.home-container li {
+  margin: 10px 0;
+}
+
+.home-container a {
+  text-decoration: none;
+  color: #4CAF50; /* green like login button */
+  font-weight: bold;
+}
+
+.home-container a:hover {
+  text-decoration: underline;
+}
+
+/* ======================= */
+/* 🔹 Generic Page Container (used for Projects, Tasks, Users, Profile) */
+/* ======================= */
+.page-container {
+  width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.page-container h2 {
+  text-align: center;
+  color: #333;
+}
+
+.page-container h3 {
+  margin-top: 20px;
+  color: #444;
+}
+
+.page-container input,
+.page-container select {
+  width: 95%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+}
+
+.page-container button {
+  padding: 8px 12px;
+  margin: 5px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.page-container button:hover {
+  background-color: #45a049;
+}
+
+/* 🔴 Red button for delete/remove */
+.page-container button.danger {
+  background-color: #e74c3c;
+}
+
+.page-container button.danger:hover {
+  background-color: #c0392b;
+}
+
+/* 🔹 Message text */
+.page-container .message {
+  color: green;
+  font-weight: bold;
+}
+
+/* 🔹 List style */
+.page-container .list {
+  list-style: none;
+  padding: 0;
+}
+
+.page-container .list li {
+  margin: 8px 0;
+  padding: 6px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* ============================= */
+/* 📌 TASK PAGE EXTRA STYLES     */
+/* ============================= */
+
+/* Keep using the shared .page-container for consistency */
+
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.task-form input[type="text"] {
+  width: 95%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+}
+
+.task-form button {
+  padding: 8px 12px;
+  margin: 5px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.task-form button:hover {
+  background-color: #45a049;
+}
+
+/* Completed checkbox row */
+.completed-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.completed-row label {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Task list box */
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.task-list li {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+
+/* 🔹 Profile Info Card */
+.profile-card {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-top: 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.profile-card h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.profile-card p {
+  margin: 6px 0;
+  color: #555;
+}
