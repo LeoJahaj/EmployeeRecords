@@ -9,7 +9,7 @@ Identity, Swagger)\
 
 ------------------------------------------------------------------------
 
-## 🚀 Features
+##  Features
 
 ### Authentication & Roles
 
@@ -29,7 +29,7 @@ Identity, Swagger)\
 
 ------------------------------------------------------------------------
 
-## 🛠️ Technologies
+##  Technologies
 
 -   **Backend**: .NET SDK 8.0/9.0, ASP.NET Core, EF Core, Dapper
     (optional), SQL Server\
@@ -41,7 +41,7 @@ Identity, Swagger)\
 
 ------------------------------------------------------------------------
 
-## ⚙️ Setup & Run
+##  Setup & Run
 
 ### 1. Clone the repository
 
@@ -107,7 +107,7 @@ cd EmployeeRecords
 
 ------------------------------------------------------------------------
 
-## ✅ Notes
+##  Notes
 
 -   You need **.NET SDK 9.0** installed.\
 -   You need **Node.js** installed (for React).\
